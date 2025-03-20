@@ -1,0 +1,26 @@
+services:
+  wordpress:
+    image: localhost/frankenwp:latest
+    container_name: frankenwp_
+    restart: always
+    ports:
+      - "8099:80" # HTTP
+    environment:
+      SERVER_NAME: ":80"
+      WORDPRESS_DB_HOST: ${DB_HOST:-db}
+      WORDPRESS_DB_USER: ${DB_USER:-exampleuser}
+      WORDPRESS_DB_PASSWORD: ${DB_PASSWORD:-examplepass}
+      WORDPRESS_DB_NAME: ${DB_NAME:-exampledb}
+      WORDPRESS_DEBUG: 1
+      WORDPRESS_TABLE_PREFIX: ${DB_TABLE_PREFIX:-wp_}
+      CADDY_GLOBAL_OPTIONS: |
+        email myemail@sample.com
+        auto_https disable_redirects
+      WORDPRESS_CONFIG_EXTRA: |
+          define('WP_SITEURL', 'http://localhost:8099');
+          define('WP_HOME', 'http://localhost:8099');
+       
+    volumes:
+      - ./app:/var/www/html/
+
+    tty: true

@@ -19,9 +19,9 @@ RUN xcaddy build \
     --output /usr/local/bin/frankenphp \
     --with github.com/dunglas/frankenphp=./ \
     --with github.com/dunglas/frankenphp/caddy=./caddy/ \
-    --with github.com/dunglas/caddy-cbrotli \
+    --with github.com/dunglas/caddy-cbrotli 
     # Add extra Caddy modules here
-    --with github.com/stephenmiracle/frankenwp/sidekick/middleware/cache=./cache
+    #--with github.com/stephenmiracle/frankenwp/sidekick/middleware/cache=./cache
 
 
 FROM wordpress:$WORDPRESS_VERSION as wp
@@ -57,7 +57,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libwebp-dev \
     libzip-dev \
     libmemcached-dev \
-    zlib1g-dev
+    zlib1g-dev \
+    sqlite3
 
 
 # install the PHP extensions we need (https://make.wordpress.org/hosting/handbook/handbook/server-environment/#php-extensions)
@@ -70,7 +71,10 @@ RUN install-php-extensions \
     zip \
     # See https://github.com/Imagick/imagick/issues/640#issuecomment-2077206945
     imagick/imagick@master \
-    opcache
+    opcache \
+    sqlite3 \
+    pdo
+
 
 
 RUN cp $PHP_INI_DIR/php.ini-production $PHP_INI_DIR/php.ini
@@ -108,11 +112,11 @@ RUN { \
 
 WORKDIR /var/www/html
 
-VOLUME /var/www/html/wp-content
+#VOLUME /var/www/html/wp-content
 
 
-COPY wp-content/mu-plugins /var/www/html/wp-content/mu-plugins
-RUN mkdir /var/www/html/wp-content/cache
+#COPY wp-content/mu-plugins /var/www/html/wp-content/mu-plugins
+#RUN mkdir /var/www/html/wp-content/cache
 
 
 
